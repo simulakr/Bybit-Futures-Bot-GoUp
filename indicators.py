@@ -59,7 +59,7 @@ def calculate_structure_2x(df: pd.DataFrame, atr_mult: float = 1.25):
 
 # --- Ana Fonksiyon ---
 
-def calculate_goup_signals(df: pd.DataFrame, symbol: str) -> pd.DataFrame:
+def calculate_indicators(df: pd.DataFrame, symbol: str) -> pd.DataFrame:
     atr_low, atr_high = ATR_RANGES[symbol]
     
     # 1. Göstergeler
