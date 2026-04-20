@@ -12,7 +12,7 @@ SYMBOLS = [ 'ETHUSDT', "SOLUSDT",'XRPUSDT','DOGEUSDT']  # 'BTCUSDT',"SUIUSDT"
 INTERVAL = "15"  # (15m-'15', 1h-'60')
 
 # Percent ATR Ranges: atr.quantile(0.20 - 0.95)
-atr_ranges = {'SOLUSDT':  (0.423, 1.176), 
+ATR_RANGES = {'SOLUSDT':  (0.423, 1.176), 
               'BTCUSDT': (0.173, 0.645), 
                'ETHUSDT':  (0.363, 0.990), 
               'DOGEUSDT':  (0.465, 1.306), 
