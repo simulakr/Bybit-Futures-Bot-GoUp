@@ -9,5 +9,5 @@ def check_long_entry(row: Dict[str, Any], symbol: str) -> bool:
     return False
 
 def check_short_entry(row: Dict[str, Any], symbol: str) -> bool:
-    atr_steps_col = 'pivot_goup_breakdown_2x' if symbol in SHORT_PAIRS_2X else 'pivot_go_down_3x'
+    atr_steps_col = 'pivot_goup_breakdown_2x' if symbol in SHORT_PAIRS_2X else 'pivot_goup_breakout_2x'
     return row[atr_steps_col] == True
