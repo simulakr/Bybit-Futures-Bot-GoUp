@@ -2,7 +2,7 @@ from typing import Dict, Optional, Any
 from pybit.unified_trading import HTTP
 from exit_strategies import ExitStrategy
 import logging
-from config import LEVERAGE, RISK_PER_TRADE_USDT, ROUND_NUMBERS, DEFAULT_LEVERAGE, SYMBOL_SETTINGS
+from config import LEVERAGE, RISK_PER_TRADE_USDT, ROUND_NUMBERS, DEFAULT_LEVERAGE, SYMBOL_SETTINGS, SL
 import time
 
 logger = logging.getLogger(__name__)
@@ -228,7 +228,7 @@ class PositionManager:
             logger.error(f"{symbol} pozisyon doğrulama hatası: {e}")
             return False
             
-    def _calculate_position_size(self, symbol: str, atr_value: float ,entry_price: float, sl_multiplier=2) -> str:
+    def _calculate_position_size(self, symbol: str, atr_value: float ,entry_price: float, sl_multiplier=SL) -> str:
         """
         Sembol bazlı risk ve kaldıraç ayarlarına göre pozisyon büyüklüğü hesaplar
         """
