@@ -174,8 +174,8 @@ def calculate_indicators(df: pd.DataFrame, symbol: str) -> pd.DataFrame:
     atr_ok = (atr_low < df["pct_atr"]) & (df["pct_atr"] < atr_high)
 
     # Breakout Condition
-    long_break_condition = (df['high_pivot_filled_2x'] + 0.1*df['z'])
-    short_break_condition = (df['low_pivot_filled_2x'] - 0.1*df['z']) 
+    long_break_condition = (df['high_pivot_ff_2x'] + 0.1*df['z'])
+    short_break_condition = (df['low_pivot_ff_2x'] - 0.1*df['z']) 
 
     # ─── Breakout / Breakdown Sinyalleri ──────────────────────────────────────
 
