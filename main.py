@@ -277,18 +277,17 @@ class TradingBot:
 
         return results
 
-    def _generate_signals(self, all_data: Dict[str, Optional[Dict]]) -> Dict[str, Optional[str]]:
-        """Toplu veriden sinyal oluştur"""
+    def _generate_signals(self, all_data):
         signals = {}
         for symbol, data in all_data.items():
             if not data:
                 signals[symbol] = None
-                continue
-
-            if check_long_entry(data, symbol):
+            elif check_long_entry(data, symbol):
                 signals[symbol] = 'LONG'
+                logger.info(f"{symbol} LONG sinyali üretildi")
             elif check_short_entry(data, symbol):
                 signals[symbol] = 'SHORT'
+                logger.info(f"{symbol} SHORT sinyali üretildi")
             else:
                 signals[symbol] = None
         return signals
