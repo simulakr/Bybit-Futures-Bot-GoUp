@@ -11,7 +11,7 @@ from position_manager import PositionManager
 
 # Log ayarları
 logging.basicConfig(
-    level=logging.INFO,
+    level=logging.DEBUG,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
         logging.FileHandler('trading_bot.log'),
@@ -253,20 +253,22 @@ class TradingBot:
 
     # ─── Veri & Sinyal ────────────────────────────────────────────────────────
 
-    def _get_market_data_batch(self) -> Dict[str, Optional[Dict]]:
-        """Tüm semboller için OHLCV + indikatör hesaplar. Kapanmamış mumu atar."""
+    def _get_market_data_batch(self):
         all_data = self.api.get_multiple_ohlcv(self.symbols, self.interval)
-        now      = pd.Timestamp.utcnow()
-        results  = {}
-
+        now = pd.Timestamp.utcnow()
+        results = {}
+    
         for symbol, df in all_data.items():
             if df is not None and not df.empty:
                 try:
-                    df = df[df.index < now]  # kapanmamış mumu at
+                    last_candle_time = df.index[-1]  # filtrelemeden önce
+                    df = df[df.index < now]
                     if df.empty:
                         logger.warning(f"{symbol} filtre sonrası veri kalmadı")
                         results[symbol] = None
                         continue
+                    filtered_last = df.index[-1]
+                    logger.debug(f"{symbol} | API son mum: {last_candle_time} | Kullanılan: {filtered_last}")
                     df = calculate_indicators(df, symbol)
                     results[symbol] = df.iloc[-1].to_dict()
                 except Exception as e:
@@ -274,7 +276,7 @@ class TradingBot:
                     results[symbol] = None
             else:
                 results[symbol] = None
-
+    
         return results
 
     def _generate_signals(self, all_data):
