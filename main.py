@@ -31,21 +31,33 @@ class TradingBot:
         self._load_existing_positions()
 
     def _initialize_account(self):
-        """ByBit için hesap ayarlarını yapılandır"""
         for symbol in self.symbols:
             try:
-                self.api.session.set_leverage(
-                category="linear",
-                symbol=symbol,
-                buyLeverage=str(LEVERAGE),
-                sellLeverage=str(LEVERAGE)
+                symbol_config = SYMBOL_SETTINGS.get(symbol, {})
+                leverage = symbol_config.get('leverage', DEFAULT_LEVERAGE)
+    
+                # 1. Margin mode set (ISOLATED öneririm)
+                self.api.session.switch_margin_mode(
+                    category="linear",
+                    symbol=symbol,
+                    tradeMode=1  # 1 = isolated, 0 = cross
                 )
-                logger.info(f"{symbol} kaldıraç ayarlandı: {LEVERAGE}x")
+    
+                # 2. Leverage set
+                self.api.session.set_leverage(
+                    category="linear",
+                    symbol=symbol,
+                    buyLeverage=str(leverage),
+                    sellLeverage=str(leverage)
+                )
+    
+                logger.info(f"{symbol} | Mode: ISOLATED | Leverage: {leverage}x")
+    
             except Exception as e:
-                if "leverage not modified" in str(e):
-                    logger.debug(f"{symbol} kaldıraç zaten {LEVERAGE}x olarak ayarlı")
+                if "not modified" in str(e):
+                    logger.debug(f"{symbol} zaten ayarlı")
                 else:
-                    logger.warning(f"{symbol} kaldıraç ayarlama uyarısı: {str(e)}")
+                    logger.warning(f"{symbol} ayar hatası: {str(e)}")
 
     def _load_existing_positions(self):
         """Bybit'teki mevcut pozisyonları bot hafızasına yükle (TP/SL emirleri dahil)"""
