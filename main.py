@@ -36,14 +36,7 @@ class TradingBot:
                 symbol_config = SYMBOL_SETTINGS.get(symbol, {})
                 leverage = symbol_config.get('leverage', DEFAULT_LEVERAGE)
     
-                # 1. Margin mode set (ISOLATED öneririm)
-                self.api.session.switch_margin_mode(
-                    category="linear",
-                    symbol=symbol,
-                    tradeMode=1  # 1 = isolated, 0 = cross
-                )
-    
-                # 2. Leverage set
+                # 1. Leverage set
                 self.api.session.set_leverage(
                     category="linear",
                     symbol=symbol,
