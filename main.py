@@ -256,19 +256,28 @@ class TradingBot:
     def _get_market_data_batch(self):
         all_data = self.api.get_multiple_ohlcv(self.symbols, self.interval)
         now = pd.Timestamp.utcnow()
+        
+        # Bybit sunucu zamanı ile sistem zamanı farkı
+        server_time = self.api.session.get_server_time()
+        server_ts   = int(server_time['result']['timeSecond'])
+        server_now  = pd.Timestamp(server_ts, unit='s', tz='UTC')
+        time_diff   = (now - server_now).total_seconds()
+        logger.info(f"Sistem-Sunucu zaman farkı: {time_diff:.2f}s")
+    
         results = {}
     
         for symbol, df in all_data.items():
             if df is not None and not df.empty:
                 try:
-                    last_candle_time = df.index[-1]  # filtrelemeden önce
+                    last_candle_time = df.index[-1]
                     df = df[df.index < now]
                     if df.empty:
                         logger.warning(f"{symbol} filtre sonrası veri kalmadı")
                         results[symbol] = None
                         continue
-                    filtered_last = df.index[-1]
-                    logger.debug(f"{symbol} | API son mum: {last_candle_time} | Kullanılan: {filtered_last}")
+                    # Son 2 mumun close değerleri
+                    last_two = df['close'].iloc[-2:]
+                    logger.info(f"{symbol} | son 2 close: {last_two.iloc[-2]:.5f} → {last_two.iloc[-1]:.5f} | mum: {df.index[-1].strftime('%H:%M')}")
                     df = calculate_indicators(df, symbol)
                     results[symbol] = df.iloc[-1].to_dict()
                 except Exception as e:
