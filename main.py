@@ -270,7 +270,7 @@ class TradingBot:
             if df is not None and not df.empty:
                 try:
                     last_candle_time = df.index[-1]
-                    df = df[df.index <= now - pd.Timedelta(minutes=15)]
+                    df = df[df.index <= now - pd.Timedelta(minutes=15)].copy()
                     if df.empty:
                         logger.warning(f"{symbol} filtre sonrası veri kalmadı")
                         results[symbol] = None
