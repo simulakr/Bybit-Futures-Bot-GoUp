@@ -274,15 +274,11 @@ class TradingBot:
         for symbol, df in all_data.items():
             if df is not None and not df.empty:
                 try:
-                    last_candle_time = df.index[-1]
                     df = df[df.index <= now - pd.Timedelta(minutes=15)].copy()
                     if df.empty:
                         logger.warning(f"{symbol} filtre sonrası veri kalmadı")
                         results[symbol] = None
                         continue
-                    # Son 2 mumun close değerleri
-                    last_two = df['close'].iloc[-2:]
-                    logger.info(f"{symbol} | son 2 close: {last_two.iloc[-2]:.5f} → {last_two.iloc[-1]:.5f} | mum: {df.index[-1].strftime('%H:%M')}")
                     df = calculate_indicators(df, symbol)
                     results[symbol] = df.iloc[-1].to_dict()
                 except Exception as e:
